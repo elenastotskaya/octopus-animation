@@ -16,6 +16,7 @@ public:
 	void Zoom(int x,int y,int prev_x,int prev_y);
 	void Rotate(int x,int y,int prev_x,int prev_y);
 	void Translate(int x,int y,int prev_x,int prev_y);
+	void TranslateAuto(Eigen::Vector3d new_pos);
 
 	void SetEye(Eigen::Vector3d eye);
 	void SetLookAt(Eigen::Vector3d lookAt);

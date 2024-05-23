@@ -1,4 +1,8 @@
+# Modified by Enena Stotskaya
+# Switched to newer libraries
+
 # ================================================================================ #
+import os;os.environ["TF_USE_LEGACY_KERAS"]="1"
 import math
 import os
 import numpy as np
@@ -11,13 +15,15 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from mpi4py import MPI
 # ================================================================================ #
-from baselines.common.cmd_util import make_mujoco_env, mujoco_arg_parser
-from baselines.common import tf_util as U
-from baselines.common import set_global_seeds
-from baselines import logger
-import gym
-from gym import spaces
-from gym.utils import seeding
+from stable_baselines.common.cmd_util import make_mujoco_env, mujoco_arg_parser
+from stable_baselines.common import tf_util as U
+from stable_baselines.common import set_global_seeds
+from stable_baselines import logger
+import gymnasium as gym
+#from gym import spaces
+from gymnasium import spaces
+#from gym.utils import seeding
+from gymnasium.utils import seeding
 # ================================================================================ #
 import deeprl
 import pposgd_simple as pposgd

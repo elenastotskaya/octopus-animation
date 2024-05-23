@@ -1,3 +1,6 @@
+// Modified by Elena Stotskaya
+// Added some utility functions, uncommented multithreading
+
 #include "World.h"
 #define EPS 5E-7
 using namespace FEM;
@@ -183,6 +186,17 @@ UpdatePositionsAndVelocities(const Eigen::VectorXd& x_n1)
 	mV = (x_n1-mX)*(1.0/mTimeStep);
 	mX = x_n1;
 }
+
+void World::SetPositions(const Eigen::VectorXd& x_n1)
+{
+	mX = x_n1;
+}
+
+void World::SetVelocities(const Eigen::VectorXd& v_n1)
+{
+	mV = v_n1;
+}
+
 Eigen::VectorXd
 World::
 ProjectiveDynamicsMethod()
@@ -250,7 +264,7 @@ EvaluateDVector(const Eigen::VectorXd& x,Eigen::VectorXd& d)
 {
 	d.resize(mConstraintDofs*3);
 	int n = mConstraints.size();
-// #pragma omp parallel for
+ #pragma omp parallel for
 	for(int i=0;i<n;i++)
 	{
 		mConstraints[i]->EvaluateDVector(x);
@@ -285,4 +299,12 @@ World::
 SetExternalForce(Eigen::VectorXd external_force)
 {
 	mExternalForces = external_force;
+}
+
+void World::AddPushbackForce(const Eigen::Vector3d& coeff)
+{
+	for (int i = 3; i < mExternalForces.size(); ++i)
+	{
+		mExternalForces(i) += std::abs(mExternalForces(i)) * coeff(i % 3);
+	}
 }

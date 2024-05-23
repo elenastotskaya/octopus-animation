@@ -12,6 +12,18 @@ namespace p = boost::python;
 namespace np = boost::python::numpy;
 int main(int argc,char** argv)
 {
+	/////////////////////////////////
+	omp_set_num_threads(20);
+    std::cout << "Max threads: " << omp_get_max_threads() << "\n";
+
+    int id;
+#pragma omp parallel private(id)
+    {
+        std::cout << "Number of threads running in parallel: " << omp_get_num_threads() << "\n";
+        std::cout << "Thread ID in parallel region: " << omp_get_thread_num() << "\n";
+    }
+	/////////////////////
+
 	Py_Initialize();
 	np::initialize();
 	if( argc < 2 ) {

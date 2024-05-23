@@ -13,7 +13,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
 find_package(TinyXML REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(PythonLibs REQUIRED)
-find_package(Boost 1.66.0 COMPONENTS filesystem python3 numpy3)
+find_package(Boost 1.85.0 COMPONENTS filesystem python3 numpy3)
 
 add_compile_options(-DHAVE_CSTDDEF)
 add_definitions(-DOCTOCON_DIR="${CMAKE_HOME_DIRECTORY}")

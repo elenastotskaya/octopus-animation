@@ -1,3 +1,6 @@
+# Modified by Enena Stotskaya
+# Switched to newer libraries
+
 # ================================================================================ #
 import os
 import sys
@@ -9,11 +12,11 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 from mpi4py import MPI
 # ================================================================================ #
-from baselines.common import Dataset, explained_variance, fmt_row, zipsame
-from baselines.common.mpi_adam import MpiAdam
-from baselines.common.mpi_moments import mpi_moments
-from baselines import logger
-import baselines.common.tf_util as U
+from stable_baselines.common import Dataset, explained_variance, fmt_row, zipsame
+from stable_baselines.common.mpi_adam import MpiAdam
+from stable_baselines.common.mpi_moments import mpi_moments
+from stable_baselines import logger
+import stable_baselines.common.tf_util as U
 # ================================================================================ #
 import timechecker
 # ================================================================================ #
@@ -171,10 +174,10 @@ def learn(env, policy_fn, *,
     ac_space = env.action_space
     pi = policy_fn("pi", ob_space, ac_space) # Construct network for new policy
     oldpi = policy_fn("oldpi", ob_space, ac_space) # Network for old policy
-    atarg = tf.placeholder(dtype=tf.float32, shape=[None]) # Target advantage function (if applicable)
-    ret = tf.placeholder(dtype=tf.float32, shape=[None]) # Empirical return
+    atarg = tf.compat.v1.placeholder(dtype=tf.float32, shape=[None]) # Target advantage function (if applicable)
+    ret = tf.compat.v1.placeholder(dtype=tf.float32, shape=[None]) # Empirical return
 
-    lrmult = tf.placeholder(name='lrmult', dtype=tf.float32, shape=[]) # learning rate multiplier, updated with schedule
+    lrmult = tf.compat.v1.placeholder(name='lrmult', dtype=tf.float32, shape=[]) # learning rate multiplier, updated with schedule
     clip_param = clip_param * lrmult # Annealed cliping parameter epislon
 
     ob = U.get_placeholder_cached(name="ob")
@@ -199,7 +202,7 @@ def learn(env, policy_fn, *,
     lossandgrad = U.function([ob, ac, atarg, ret, lrmult], losses + [U.flatgrad(total_loss, var_list, 1.0)])
     adam = MpiAdam(var_list, epsilon=adam_epsilon)
 
-    assign_old_eq_new = U.function([],[], updates=[tf.assign(oldv, newv)
+    assign_old_eq_new = U.function([],[], updates=[tf.compat.v1.assign(oldv, newv)
         for (oldv, newv) in zipsame(oldpi.get_variables(), pi.get_variables())])
     compute_losses = U.function([ob, ac, atarg, ret, lrmult], losses)
 
@@ -254,6 +257,10 @@ def learn(env, policy_fn, *,
             raise NotImplementedError
 
         logger.log("********** Iteration %i ************"%iters_so_far)
+        #print("%i"%max_timesteps)
+        #print("%i"%max_episodes)
+        #print("%i"%max_iters)
+        #print("%i"%max_seconds)
 
         seg = seg_gen.__next__()
         add_vtarg_and_adv(seg, gamma, lam)

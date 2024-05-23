@@ -83,6 +83,16 @@ Translate(int x,int y,int prev_x,int prev_y)
 	delta = UnProject(delta) / 200.0;
 	lookAt += delta; eye += delta;
 }
+
+void
+Camera::
+TranslateAuto(Eigen::Vector3d new_pos)
+{
+	Eigen::Vector3d look_distance = eye - lookAt;
+	lookAt = new_pos;
+	eye = new_pos + look_distance;
+}
+
 void
 Camera::
 SetEye(Eigen::Vector3d eye)

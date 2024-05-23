@@ -9,6 +9,7 @@ namespace GUI
 	void DrawCharacter(Octopus* octopus,const Eigen::VectorXd& x,const Eigen::Vector3d& eye);
 	void DrawMuscles(const std::vector<Muscle*>& muscles,const Eigen::VectorXd& x);
 	void DrawActivations(const double& x, const double& y,const double& length,const double& height,Muscle* muscle1,Muscle* muscle2);
-	void DrawOBJ();
+	void DrawOBJ(FEM::OBJMesh* mesh);
+	void DrawAABB(const std::vector<double>& bounds);
 };
 #endif

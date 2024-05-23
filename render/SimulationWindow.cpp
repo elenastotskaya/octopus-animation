@@ -49,7 +49,6 @@ SimulationWindow(std::string network_name)
 		p::object load = env_module.attr("loadNN");
 		load(network_name);
 		mEnvironment->Reset();
-		mEnvironment->UpdateRandomTargetVelocity();
 	} 
 	catch (const p::error_already_set&)
 	{
@@ -139,19 +138,30 @@ Display()
 	initLights();
 	glEnable(GL_LIGHTING);
 
+	const Eigen::VectorXd& x = mEnvironment->GetSoftWorld()->GetPositions();
+	Eigen::Vector3d center_position = 
+		x.block<3,1>(3*mEnvironment->GetOctopus()->GetCenterIndex(),0);
+	mCamera->TranslateAuto(center_position);
 	mCamera->Apply();
 
-	const Eigen::VectorXd& x = mEnvironment->GetSoftWorld()->GetPositions();
+	
 	const Eigen::Vector3d& eye = mCamera->GetEye();
 	mEnvironment->GetOctopus()->SetVertexNormal();
 	const std::vector<Muscle*>& muscles = mEnvironment->GetOctopus()->GetMuscles();
 
 	GUI::DrawWorld();
+	
 	GUI::DrawMuscles(muscles,x);
 	GUI::DrawCharacter(mEnvironment->GetOctopus(),x,eye);
+	GUI::DrawAABB(mEnvironment->GetColliderBounds());
+	std::vector<Obstacle> obstacles = mEnvironment->GetObstacles();
+	for(auto obstacle : obstacles)
+	{
+		GUI::DrawOBJ(obstacle.GetMesh());
+		GUI::DrawAABB(obstacle.GetColliderBounds());
+	}
 
-	Eigen::Vector3d center_position = 
-		x.block<3,1>(3*mEnvironment->GetOctopus()->GetCenterIndex(),0);
+	
 	Eigen::Vector3d forward_vector = mEnvironment->GetOctopus()->GetForwardVector(x);
 	Eigen::Vector3d target_velocity = mEnvironment->GetTargetVelocity();
 	Eigen::Vector3d average_velocity = mEnvironment->GetAverageVelocity();
@@ -159,18 +169,21 @@ Display()
 	GUI::DrawArrow3D(center_position,average_velocity,0.01,Eigen::Vector3d(255.0/256,56.0/256,109.0/256));
 	GUI::DrawArrow3D(center_position,target_velocity,0.01,Eigen::Vector3d(12.0/256.0,239.0/256.0,103.0/256.0));
 
+	Eigen::Vector3d eye_position_1;
+	Eigen::Vector3d eye_position_2;
+	for (int i = 0; i < NUM_AXIS_SAMPLES; ++i)
+	{
+		eye_position_1 = x.block<3,1>(3*mAxisBlock1[i],0);
+       	eye_position_2 = x.block<3,1>(3*mAxisBlock2[i],0);
+		GUI::DrawPoint(eye_position_1, 5.0, Eigen::Vector4d(255.0/256,56.0/256,109.0/256,1.0));
+		GUI::DrawPoint(eye_position_2, 5.0, Eigen::Vector4d(12.0/256.0,239.0/256.0,103.0/256.0,1.0));
+	}
+
 	double init_x = 0.78;
 	double init_y = 1.0;
 
 	double length = 0.2;
 	double height = 0.08;
-
-	for(int i=0; i<8; i++) 
-	{
-		const auto& m1 = muscles[2*i];
-		const auto& m2 = muscles[2*i+1];
-		GUI::DrawActivations(init_x,init_y-(i+1)*1.2*height,length,height,m1,m2);
-	}
 
 	glutSwapBuffers();
 }
@@ -212,6 +225,38 @@ Keyboard(unsigned char key,int x,int y)
 			mActions = mEnvironment->GetNormalizer()->RealToNorm(mActions);
 			break;
 		}
+		case 'w': {
+			//mEnvironment->MoveForward();
+			//mEnvironment->SetTargetVelocity(Eigen::Vector3d{0.0, 0.0, -1.0});
+			mEnvironment->Turn(TurnDirection::Up);
+			break;
+		}
+		case 's': {
+			//mEnvironment->StopMovement();
+			//mEnvironment->SetTargetVelocity(Eigen::Vector3d{0.0, 0.0, 1.0});
+			mEnvironment->Turn(TurnDirection::Down);
+			break;
+		}
+		case 'a': {
+			mEnvironment->Turn(TurnDirection::Left);
+			//mEnvironment->SetTargetVelocity(Eigen::Vector3d{-1.0, 0.0, 0.0});
+			break;
+		}
+		case 'd': {
+			mEnvironment->Turn(TurnDirection::Right);
+			//mEnvironment->SetTargetVelocity(Eigen::Vector3d{1.0, 0.0, 0.0});
+			break;
+		}
+		/*case 'e': {
+			//mEnvironment->Turn(TurnDirection::Up);
+			mEnvironment->SetTargetVelocity(Eigen::Vector3d{0.0, 1.0, 0.0});
+			break;
+		}
+		case 'c': {
+			//mEnvironment->Turn(TurnDirection::Down);
+			mEnvironment->SetTargetVelocity(Eigen::Vector3d{0.0, -1.0, 0.0});
+			break;
+		}*/
 	}
 	glutPostRedisplay();
 }

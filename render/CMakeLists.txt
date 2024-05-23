@@ -13,7 +13,7 @@ include_directories(../sim/)
 link_directories(../sim/fem/)
 include_directories(../sim/fem/)
 
-find_package(Boost 1.66.0 COMPONENTS python3 numpy3 filesystem)
+find_package(Boost 1.85.0 COMPONENTS python3 numpy3 filesystem)
 find_package(PythonLibs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(OpenGL REQUIRED)

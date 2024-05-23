@@ -37,5 +37,10 @@ protected:
 
 	p::object mm,mns,sys_module,env_module;
 	bool mIsNNLoaded;
+
+private:
+	static constexpr int NUM_AXIS_SAMPLES = 4;
+	int mAxisBlock1[NUM_AXIS_SAMPLES] = {29, 31, 39, 56};
+	int mAxisBlock2[NUM_AXIS_SAMPLES] = {96, 94, 87, 86};
 };
 #endif

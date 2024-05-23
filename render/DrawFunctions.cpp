@@ -252,3 +252,50 @@ DrawActivations(const double& x, const double& y,const double& length,const doub
 
     glEnable(GL_LIGHTING);    
 }
+
+void 
+GUI::
+DrawOBJ(FEM::OBJMesh* mesh)
+{
+	glEnable(GL_LIGHTING);
+
+	std::vector<Eigen::Vector3i> triangles = mesh->GetTriangles();
+	std::vector<Eigen::Vector3d> vertices = mesh->GetVertices();
+	std::vector<Eigen::Vector3d> normals = mesh->GetVertexNormal();
+	for(const auto& triangle : triangles)
+	{
+		Eigen::Vector3d p0 = vertices[triangle(0)-1];
+		Eigen::Vector3d p1 = vertices[triangle(1)-1];
+		Eigen::Vector3d p2 = vertices[triangle(2)-1];
+
+		Eigen::Vector3d n0 = normals[triangle(0)-1];
+		Eigen::Vector3d n1 = normals[triangle(1)-1];
+		Eigen::Vector3d n2 = normals[triangle(2)-1];
+		GUI::DrawTriangle(p0,p1,p2,n0,n1,n2,Eigen::Vector4d(200.0/256.0,200.0/256.0,200.0/256.0,1.0));
+	}
+	glDisable(GL_LIGHTING);
+}
+
+void 
+GUI::
+DrawAABB(const std::vector<double>& bounds)
+{
+	glEnable(GL_LIGHTING);
+
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[2], bounds[4]), Eigen::Vector3d(bounds[1], bounds[2], bounds[4]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[2], bounds[5]), Eigen::Vector3d(bounds[1], bounds[2], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[2], bounds[4]), Eigen::Vector3d(bounds[0], bounds[2], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[1], bounds[2], bounds[4]), Eigen::Vector3d(bounds[1], bounds[2], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[3], bounds[4]), Eigen::Vector3d(bounds[1], bounds[3], bounds[4]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[3], bounds[5]), Eigen::Vector3d(bounds[1], bounds[3], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[3], bounds[4]), Eigen::Vector3d(bounds[0], bounds[3], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[1], bounds[3], bounds[4]), Eigen::Vector3d(bounds[1], bounds[3], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[2], bounds[4]), Eigen::Vector3d(bounds[0], bounds[3], bounds[4]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[0], bounds[2], bounds[5]), Eigen::Vector3d(bounds[0], bounds[3], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[1], bounds[2], bounds[4]), Eigen::Vector3d(bounds[1], bounds[3], bounds[4]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+	GUI::DrawLine(Eigen::Vector3d(bounds[1], bounds[2], bounds[5]), Eigen::Vector3d(bounds[1], bounds[3], bounds[5]), Eigen::Vector4d(254/256.0, 114/256.0, 121/256.0, 1.0), 1.0);
+
+	glDisable(GL_LIGHTING);
+}

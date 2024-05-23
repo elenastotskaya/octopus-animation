@@ -26,6 +26,8 @@ public:
 
 	void 								TimeStepping(bool isIntegrated = true);
 	void 								UpdatePositionsAndVelocities(const Eigen::VectorXd& x_n1);
+	void								SetPositions(const Eigen::VectorXd& x_n1);
+	void								SetVelocities(const Eigen::VectorXd& v_n1);
 
 	Eigen::VectorXd						ProjectiveDynamicsMethod();
 	void 								PreComputation();
@@ -36,6 +38,7 @@ public:
 
 	void								SetExternalForce(Eigen::VectorXd external_force);
 	const Eigen::VectorXd&				GetExternalForce() {return mExternalForces;};
+	void								AddPushbackForce(const Eigen::Vector3d& coeff);
 
 	const double&						GetTimeStep(){return mTimeStep;};
 	const double&						GetTime(){return mTime;};

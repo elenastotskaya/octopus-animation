@@ -8,6 +8,7 @@ OBJMesh::
 OBJMesh(const std::string& path,const Eigen::Affine3d& T)
 	:Mesh()
 {
+	//std::cout << "Creating mesh\n";
 	std::ifstream ifs(path);
 	if(!(ifs.is_open()))
 	{
@@ -75,5 +76,8 @@ OBJMesh(const std::string& path,const Eigen::Affine3d& T)
 	ifs.close();
 
 	for(auto& v : mVertices)
+	{
 		v = T*v;
+		//std::cout << v(0) << " " << v(1) << " " << v(2) << "\n";
+	}
 }
