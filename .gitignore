@@ -3,7 +3,5 @@
 build/
 .tags*
 *.png
-result/
-.result
 */*.so
 */__pycache__/
