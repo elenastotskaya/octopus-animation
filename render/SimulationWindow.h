@@ -1,3 +1,6 @@
+// Modified by Elena Stotskaya
+// Added obstacle processing and eye axis calculation
+
 #ifndef __SIMULATION_WINDOW_H__
 #define __SIMULATION_WINDOW_H__
 #include "GLWindow.h"

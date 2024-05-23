@@ -1,3 +1,6 @@
+// Modified by Elena Stotskaya
+// Added TranslateAuto method
+
 #include "Camera.h"
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

@@ -1,3 +1,6 @@
+// Modified by Elena Stotskaya
+// Added obstacle processing and eye axis calculation
+
 #include "SimulationWindow.h"
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

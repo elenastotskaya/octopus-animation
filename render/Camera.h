@@ -1,3 +1,6 @@
+// Modified by Elena Stotskaya
+// Added TranslateAuto method
+
 #ifndef __CAMERA_H_
 #define __CAMERA_H_
 #include <Eigen/Core>

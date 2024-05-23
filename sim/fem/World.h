@@ -1,3 +1,6 @@
+// Modified by Elena Stotskaya
+// Added some utility functions
+
 #ifndef __WORLD__H__
 #define __WORLD__H__
 #include <Eigen/Core>
