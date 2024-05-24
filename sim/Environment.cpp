@@ -532,7 +532,7 @@ void Environment::LoadObstacles(const std::string& list_file)
 		std::getline(ifs,file_name);
         std::getline(ifs,transform);
 
-        if (file_name.empty() || transform.empty())
+        if (file_name.empty())
         {
             break;
         }

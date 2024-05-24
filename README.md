@@ -1,117 +1,108 @@
-# SoftCon: Simulation and Control of Soft-Bodied Animals with Biomimetic Actuators
-
-![SoftCon](SoftCon.png)
-<p align="center">
-<i>The octopus swims by actuating muscles embedded in the soft tissues.</i>
-</p>
-
-## Abstract
-SoftCon is an open source code that implements the work [SoftCon: Simulation and Control of Soft-Bodied Animals with Biomimetic Actuators](http://mrl.snu.ac.kr/publications/ProjectSoftCon/SoftCon.html). With our framework, user can generate the swimming animation of under-water animals with deformable body simulator, biomimetic muscle pattern generator, and swimming controller based on deep reinforcement learning. This code is written in C++ and Python, based on [Tensorflow](https://github.com/tensorflow/tensorflow) and [OpenAI Baselines](https://github.com/openai/baselines). 
-
-## Publication
-
-Sehee Min, Jungdam Won, Seunghwan Lee, Jungnam Park, and Jehee Lee. 2019.
-SoftCon: Simulation and Control of Soft-Bodied Animals with Biomimetic Actuators.
-ACM Trans. Graph. 38, 6, 208. (SIGGRAPH Asia 2019)
-
-Project page : [http://mrl.snu.ac.kr/publications/ProjectSoftCon/SoftCon.html](http://mrl.snu.ac.kr/publications/ProjectSoftCon/SoftCon.html)  
-Paper : [http://mrl.snu.ac.kr/publications/ProjectSoftCon/SoftCon.pdf](http://mrl.snu.ac.kr/publications/ProjectSoftCon/SoftCon.pdf)  
-Youtube : [https://www.youtube.com/watch?v=I2ylkhPSkT4](https://www.youtube.com/watch?v=I2ylkhPSkT4)  
-Blog : [http://mrl.snu.ac.kr/blog/ProjectSoftCon](http://mrl.snu.ac.kr/blog/ProjectSoftCon)  
+# Разработка алгоритма процедурной анимации осьминога
 
 
-## How to install
+В основе лежит проект [SoftCon: Simulation and Control of Soft-Bodied Animals with Biomimetic Actuators](https://github.com/seiing/SoftCon) за авторством Sehee Min и других.
+Исходное описание проекта от авторов, включающее ссылки на их публикации по теме, находится в файле readme_original.
 
-We recommend users to install and run this framework on Ubuntu. We checked code works in Ubuntu 16.04 and 18.04. 
+## Установка и запуск программы
 
+Рекомендованная операционная система для запуска - Ubuntu 24.04
 
-
-### C++ 
-#### Basic C++ library
+Аналогично исходной инструкции:
 ```
 sudo apt-get update
 sudo apt-get install build-essential cmake-curses-gui git
 sudo apt-get install libeigen3-dev freeglut3-dev libtinyxml-dev libpython3-dev python3-numpy libopenmpi-dev
 ```
-#### Boost 1.66 with Python3 : **Boost library should install from the source code!**  
-- Download Boost 1.66 source code as zip file in [https://www.boost.org/users/history/version_1_66_0.html](https://www.boost.org/users/history/version_1_66_0.html).
-- Unzip the file. ``` tar -xvf boost_1_66_0.tar.gz ```
-- Compile and install the source code.
-```
-cd boost_1_66_0
+
+Скачать последнюю версию Boost по ссылке: [https://www.boost.org/users/history/version_1_85_0.html](https://www.boost.org/users/history/version_1_85_0.html)
+Распаковать: ```tar -xvf boost_1_85_0.tar.gz```
+Установить Boost:
+```cd boost_1_85_0
 sudo ./bootstrap.sh --with-python=python3
 sudo ./b2 --with-python --with-filesystem --with-system install
 ```
 
-### Python
-#### Virtual environment
-````
-sudo apt-get install python3-pip
-sudo pip3 install virtualenv
-virtualenv venv
-source venv/bin/activate
-````
-
-#### Python library with pip install
-````
-pip install numpy
-pip install scipy
-pip install matplotlib
-pip install tensorflow
-pip install mpi4py
-pip install OpenCV-Python
-````
-
-#### Baselines Installation for Deep RL
-* OpenAI Gym
+### Создание виртуального окружения:
 ```
-pip install gym
+sudo apt-get install python3.12-venv
+mkdir -p ~/.venvs
+python3 -m venv ~/.venvs/softcon_venv
 ```
-* OpenAI Baselines
+
+### Установка модулей Python:
+```
+~/.venvs/softcon_venv/bin/python -m pip install numpy scipy matplotlib tensorflow mpi4py OpenCV-Python gymnasium ipython
+```
+
+### Установка более ранней версии Keras для доступа к legacy функциям:
+```
+~/.venvs/softcon_venv/bin/python -m pip install tf-keras~=2.16
+```
+   
+### Установка stable-baselines:
+Используйте мой форк, представляющий собой комбинацию OpenAI Baselines и Stable Baselines, адаптированную под современный Python:
 ```
 sudo apt-get update && sudo apt-get install cmake zlib1g-dev
-git clone https://github.com/openai/baselines.git
-cd baselines
-pip install -e .
+git clone https://github.com/elenastotskaya/stable-baselines.git
+cd stable-baselines
+~/.venvs/softcon_venv/bin/python -m pip install -e .
 ```
 
-## How to compile & run
+### Установка проекта:
+```
+cd ..
+git clone https://github.com/elenastotskaya/octopus-animation.git
+```
 
-### Install this repository
+### Сборка:
 ```
-git clone http://github.com/seiing/SoftCon
-```
-
-### Build
-```
-cd SoftCon
+cd octopus-animation
 mkdir build
 cd build 
 cmake ..
-make -j8
+make -j
 ```
 
-### Run
-#### Default render
+### Запуск демонстрационного примера:
 ```
 ./render/render
 ```
 
-* ```space``` : play/pause.
-* ```k``` : play with default key.
-* ```r``` :reset the scene.
-
-#### Render with trained network
+Для обучения или запуска обученной модели необходимо сначала активировать виртуальное окружение:
 ```
-./render/render (network_name)
+source ~/.venvs/softcon_venv/bin/activate
 ```
 
-#### Training
+Запуск обученной модели:
 ```
-cd SoftCon/learn
-mpirun -np 8 python3 -m run --type=train
+./render/render (название_модели)
+```
+Уже обученные модели:
+- Модель с ограничением на разницу высоты: ```train_20240426_014248_1900```
+- Модель с ограничением на разницу скоростей: ```train_20240501_011254_2550```
+- Модель с обоими ограничениями: ```train_20240504_004655_3860```
+
+Для обученных моделей реализовано управление движением:
+W - поворот вверх, S - вниз, A - влево, D - вправо (в относительной системе координат осьминога)
+Регулирование скорости движения в этих моделях не реализовано.
+
+Обучение:
+```
+cd octopus-animation/learn
+mpirun -np (число-потоков) python3 -m run --type=train
 ```
 
-## Contact us
-- For bug reports/requests/suggestions, use github issues. 
-- For private inquiries, feel free to contact us at: sehee@mrl.snu.ac.kr
+Добавление препятствий на сцену:
+Скопировать модель в формате .obj в папку data/meshes.
+В файле data/meshes/mesh_list.txt указать параметры в соответствии с примером:
+```
+box2.obj
+t 0 1.5 -6.0 s 5.0 3.0 1.0 r 0.8 0.0 1.0 0.0
+```
+Первая строка - название файла модели
+Вторая строка - параметры преобразований, применяемых к модели:
+t - смещение, задаются значения смещения по трем координатам
+r - поворот, первое число - угол поворота, следующие - ось вращения, заданная как три координаты вектора
+s - масштабирование, задаются коэффициенты масштабирования по трем координатам
+Все параметры опциональные и могут указываться в любом порядке (если не используется ни один параметр, оставить пустую строку перед следующим названием файла)
