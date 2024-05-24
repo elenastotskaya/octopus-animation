@@ -2,6 +2,5 @@
 *.sublime-*
 build/
 .tags*
-*.png
 */*.so
 */__pycache__/
